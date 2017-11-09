@@ -1,0 +1,769 @@
+---
+title: "Final Exam"
+author: "Brett Scroggins"
+date: "8/2/2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Chapter 2 - Question 10
+
+```{r}
+#######################################################
+# Chapter 2 - Question 10
+#######################################################
+
+library(MASS)
+attach(Boston)
+
+# A - size of data set
+dim(Boston)
+#result = 506 x 14
+```
+
+a.	The Boston data sets contains 506 rows and 14 columns. The rows represent the 506 housing entries in the set, and the 14 columns represent different descriptive housing qualities.
+
+```{r}
+# B - pairwise scatter plots
+pairs(Boston)
+```
+
+b.	Upon review the pairs scatterplots, the following relationships were deemed to have correlation. The scatterplots have been attached on the page to follow.
+
+Per capita crime rate (crim) correlates with the following:
+    zn, age, dis, rad, and tax
+Proportion of residential land zoned for lots over 25,000 sq.ft. (zn) correlates with:
+		indus, nox, black
+Proportion of non-retail business acres per town (indus) correlates with:
+		dis, rad
+Nitrogen oxides concentration (nox) correlates with:
+		age, dis
+Average number of rooms per dwelling (rm) correlates with:
+		lstat, medv
+
+```{r}
+# C - per capita crime rate associations
+par(mfrow=c(2,3))
+plot(age,crim)
+plot(dis,crim)
+plot(rad,crim)
+plot(tax,crim)
+plot(ptratio,crim)
+```
+
+c.	The per capita crime rate has a few different predictors that it associates with.
+•	Age vs. Crim – positive
+•	Dis vs. Crim – negative
+•	Rad vs. Crim – positive
+•	Tax vs. Crim – positive
+•	PTRatio vs. Crim – positive
+
+```{r}
+# D - any suburbs with high crime rates? tax rates? puple-teacher ratio?
+# comment on range of each precictor.
+par(mfrow=c(3,1))
+hist(crim,breaks = 10,col='yellow')
+crimhi = Boston[crim >=20,]
+nrow(crimhi)
+
+hist(tax, breaks=10,col='green')
+taxmid1 = Boston[tax>=200,]
+taxmid2 = Boston[tax>=450,]
+nrow(taxmid1) - nrow(taxmid2)
+
+taxhi = Boston[tax>=650,]
+nrow(taxhi)
+
+hist(ptratio,breaks=10,col='blue')
+majlo = Boston[ptratio > 14,]
+num20hi = Boston[ptratio > 20.51,]
+num20lo = Boston[ptratio > 19.51,]
+nrow(num20lo) - nrow(num20hi)
+nrow(majlo) - nrow(num20hi)
+```
+
+d.	The crime rate in majority of suburbs is low (<10%), with a very small amount (18) reaching about the 20% crime rate.
+
+In this data, the property value of 351 houses fell between $2,000,000 and $4,500,000 in this range; however, there was a high-end to which the tail of the histogram with property value over $6,500,000 contained an additional 137 houses.
+
+The student-teacher ratio in the suburbs falls between the approximate ratios of 14-1 and 20-1 for 434 of the entries. The most common student to teacher ratio was about 20-1, and this occurred in 161 data points.
+
+```{r}
+# E - how many of suburbs bound Charles river?
+sum(Boston[,'chas'])
+# 35 are on the river
+```
+
+e.	Of the houses sampled, 35 lie on the Charles river.
+
+```{r}
+# F - median of pupil-teacher ratio of whole data set
+# G - lowest median value of owner-occupied homes
+summary(Boston)
+# Median ptratio = 19.05
+# Lowest medv = $5000 (5 but by \$1000's)
+
+lmedv = Boston[medv==5,]
+nrow(lmedv)
+summary(lmedv)
+```
+
+f.	The median student-teacher ratio of all suburbs is 19.05 – 1.
+
+g.	The lowest median value of owner-occupied homes is $5,000. In the suburbs in which these occur in, there are other predictors that stand out in comparison with the overall range. Predictors such as indus, nox, tax, ptratio, and lstat all fell in the 3rd Quartile or higher and crim, age, and rad all contained the maximum value of the data set. The only qualifier that was below the mean was dist, which fell below the 1st quartile.
+
+```{r}
+# H - 7 or more, and 8 or more room dwellings
+
+seven = Boston[rm >= 7,]
+nrow(seven)
+# 64 with 7 or more
+
+eight = Boston[rm>=8,]
+nrow(eight)
+# 13 with 8 or more rooms
+```
+
+h.	In this data set, there are 64 dwellings that have 7 or more rooms; additionally, 13 of those have 8 or more rooms in the house.
+
+
+## Chapter 3 - Questions 15
+
+```{r}
+#######################################################
+# Chapter 3 - Question 15
+#######################################################
+
+
+#A - create regression between each variable
+
+summary(Boston)
+attach(Boston)
+
+lm.zn = lm(crim~zn)
+summary(lm.zn)
+#yes
+
+lm.indus = lm(crim~indus)
+summary(lm.indus)
+#yes
+
+lm.chas = lm(crim~chas)
+summary(lm.chas)
+#no
+
+lm.nox = lm(crim~nox)
+summary(lm.nox)
+#yes
+
+lm.rm = lm(crim~rm)
+summary(lm.rm)
+#yes
+
+lm.age = lm(crim~age)
+summary(lm.age)
+#yes
+
+lm.dis = lm(crim~dis)
+summary(lm.dis)
+#yes
+
+lm.rad = lm(crim~rad)
+summary(lm.rad)
+#yes
+
+lm.tax = lm(crim~tax)
+summary(lm.tax)
+#yes
+
+lm.ptratio = lm(crim~ptratio)
+summary(lm.ptratio)
+#yes
+
+lm.black = lm(crim~black)
+summary(lm.black)
+#yes
+
+lm.lstat = lm(crim~lstat)
+summary(lm.lstat)
+#yes
+
+lm.medv = lm(crim~medv)
+summary(lm.medv)
+#yes
+```
+
+a.	While running a linear regression for each variable and crime rate, the following list of variable were found to have statistically significant correlation with crime rate.
+
+zn, indus, nox, rm, age, dis, rad, tax, ptratio, black, lstat, and medv
+
+```{r}
+# B - create multiple regression model between crim and all others
+
+lm.all = lm(crim~.,data = Boston)
+summary(lm.all)
+# Yes = zn, dis, rad, black, medv
+# No = indus, chas, nox, rm, age, tax, ptratio, lstat
+# y = 17.033 + 0.045(zn) - 0.987(dis) + 0.588(rad) - 0.008(black) - 0.199(medv)
+```
+
+b.	The multiple regression for the data set showed that the variable with significant impact on crime rate are as follows.
+
+zn, dis, rad, black, and medv
+
+```{r}
+# C - create a plot comparing coefficients from linear to multiple
+
+x = c(coefficients(lm.zn)[2],coefficients(lm.indus)[2],coefficients(lm.chas)[2],coefficients(lm.nox)[2],
+      coefficients(lm.rm)[2],coefficients(lm.age)[2],coefficients(lm.dis)[2],coefficients(lm.rad)[2],
+      coefficients(lm.tax)[2],coefficients(lm.ptratio)[2],coefficients(lm.black)[2], coefficients(lm.lstat)[2],
+      coefficients(lm.medv)[2])
+
+y = coefficients(lm.all)[2:14]
+
+par(mfrow=c(1,1))
+plot (x,y)
+```
+
+c. A dot-plot of the data based on the value of coefficients from linear regression (x) and multiple regression (y).
+
+```{r}
+# D - check all functions with polynomial regression (max x^3)
+
+lm.zn3 = lm(crim~poly(zn,3))
+summary(lm.zn3)
+# 1 and 2
+
+lm.indus3 = lm(crim~poly(indus,3))
+summary(lm.indus3)
+# 1, 2, and 3
+
+# Chase river will not be a valid predictor with polynomials
+
+lm.nox3 = lm(crim~poly(nox,3))
+summary(lm.nox3)
+# 1, 2, and 3
+
+lm.rm3 = lm(crim~poly(rm,3))
+summary(lm.rm3)
+# 1 and 2
+
+lm.age3 = lm(crim~poly(age,3))
+summary(lm.age3)
+# 1, 2, and 3
+
+lm.dis3 = lm(crim~poly(dis,3))
+summary(lm.dis3)
+# 1, 2, and 3
+
+lm.rad3 = lm(crim~poly(rad,3))
+summary(lm.rad3)
+# 1 and 2
+
+lm.tax3 = lm(crim~poly(tax,3))
+summary(lm.tax3)
+# 1 and 2
+
+lm.ptratio3 = lm(crim~poly(ptratio,3))
+summary(lm.ptratio3)
+# 1, 2, and 3
+
+lm.black3 = lm(crim~poly(black,3))
+summary(lm.black3)
+# 1
+
+lm.lstat3 = lm(crim~poly(lstat,3))
+summary(lm.lstat3)
+# 1 and 2
+
+lm.medv3 = lm(crim~poly(medv,3))
+summary(lm.medv3)
+# 1, 2, and 3
+```
+
+d.	Lastly, the crime rate was regressed against each additional variable with a new constraint that each regression could have up to a 3rd degree polynomial term. The following are the highest order relationship between crime rate and the specified variable.
+
+zn – 2nd		indus – 3rd 		nox – 3rd
+rm – 2nd		age – 3rd 		dis – 3rd
+rad – 2nd		tax – 2nd		ptratio – 3rd 
+black – 1st 		lstat – 2nd 		medv – 3rd 
+***Note: There was no statistical significance of a higher order for the location by Charles river as this was not a numeric variable.
+
+
+## Chapter 6 - Questions 9
+
+```{r}
+#######################################################
+# Chapter 6 - Question 9
+#######################################################
+
+library(ISLR)
+library(glmnet)
+library(pls)
+
+
+# Part A - seperate to test and train data set
+
+set.seed(1)
+train = sample(1:dim(College)[1], dim(College)[1]*.8)
+test = -train
+train = College[train, ]
+test = College[test, ]
+```
+
+a.	The College data was divided into two subgroups. 80% of the data was randomly selected to be put into the train set, and the remaining 20% were stored in the test set.
+
+```{r}
+# Part B - least squares regression for train set
+
+least.fit = lm(Apps~., data = train)
+least.pred = predict(least.fit, test)
+mean((least.pred - test[,'Apps'])^2)
+# MSE = 1075064
+sqrt(1075064)
+```
+
+b.	The linear model least squares regression output a MSE of 1,075,064 (or RMSE of 1,036.85).
+
+```{r}
+# Part C - Ridge regression with lambda chosen with CV
+
+train.mat = model.matrix(Apps~., data=train)
+test.mat = model.matrix(Apps~., data=test)
+grid = 10 ^ seq(10, -2, length=100)
+ridge = cv.glmnet(train.mat, train[, "Apps"], alpha=0, lambda=grid, thresh=1e-12)
+bestlam = ridge$lambda.1se
+bestlam
+# Best lambda = 174.75
+
+ridge.pred = predict(ridge, newx=test.mat, s=bestlam)
+mean((test[, "Apps"] - ridge.pred)^2)
+# MSE = 1115735
+sqrt(1115735)
+```
+
+c.	After cross validation, the minimum lambda found was 174.75. This produced a ridge regression model that output an MSE of 1,115,735 (or RMSE of 1,056.28).
+
+```{r}
+# Part D - Lasso method with lambda chosen with cv
+
+lasso = cv.glmnet(train.mat, train[, "Apps"], alpha=1, lambda=grid, thresh=1e-12)
+bestlam = lasso$lambda.min
+bestlam
+# Best lambda = 18.74
+
+lasso.pred = predict(lasso, newx=test.mat, s=bestlam)
+mean((test[, "Apps"] - lasso.pred)^2)
+# MSE = 1112058
+sqrt(1112058)
+
+lasso = glmnet(model.matrix(Apps~., data=College), College[, "Apps"], alpha=1)
+predict(lasso, s=bestlam, type="coefficients")
+# Books and F.Undergrad are the only two with zero coeffiencents
+```
+
+d.	Cross validation for the Lasso method gave an ideal lambda of 18.74. This gave an out of sample MSE of 1,112,058 (or RMSE of 1,054.54).
+
+```{r}
+# Part E - PCR model with M chosen with CV
+
+pcr.fit = pcr(Apps~., data=train, scale=T, validation="CV")
+validationplot(pcr.fit, val.type="MSEP")
+# 7 looks to be the approximate ideal number of components
+
+pcr.pred = predict(pcr.fit, test, ncomp=7)
+mean((test[, "Apps"] - data.frame(pcr.pred))^2)
+# MSE = 1541736
+sqrt(1541736)
+```
+
+e.	For a PCR for this data set, an ideal M value was found to be 7. Using this, the fit analyzing the test set produces an MSE of 1,541,736 (or RMSE of 1,241.67).
+
+```{r}
+# F - PLS Model with M chosen by CV
+
+pls.fit = plsr(Apps~., data=train, scale=T, validation="CV")
+validationplot(pls.fit, val.type="MSEP")
+
+pls.pred = predict(pls.fit, test, ncomp=10)
+mean((test[, "Apps"] - data.frame(pls.pred))^2)
+# MSE = 1075376
+sqrt(1075376)
+```
+
+f.	After finding the ideal number of variables to comparable to be 10, this yielded an MSE of 1,075,376 (or RMSE of 1,037.00).
+
+```{r}
+# G - Comment on results obtained. How accurately can we predict number 
+# of college apps? Is there much difference amongst tests?
+
+summary(College$Apps)
+```
+
+g.	The accuracy of predicting college apps for every method tested all produced a RMSE of over 1,000. This means that to obtain an approximate range with a 95% confidence that the actual value will fall in that range, you must take the expected value of and add/subtract two times that RMSE. This produces a very wide range that is not very useful in this case. With on average colleges in the data set only receive 3,002 and median value of 1,558, a range of +- over 2,000 is not the most descriptive. There seem to be outliers affecting the data (one example being the maximum of 48,094 applications received) that would need to be cleaned before more accurate regressions can be formed.
+
+
+## Chapter 6 - Questions 11
+
+```{r}
+#######################################################
+# Chapter 6 - Question 11
+#######################################################
+
+library(MASS)
+library(leaps)
+library(glmnet)
+library(pls)
+
+# A - Do subset selection, lasso, ridge, and PCR
+
+# Subset selection
+predict.regsubsets = function(object, newdata,id,...){
+  form = as.formula(object$call[[2]])
+  mat = model.matrix(form,newdata)
+  coefi = coef(object, id=id)
+  xvars = names(coefi)
+  mat[,xvars]%*%coefi
+}
+regfit.best = regsubsets(crim~., data = Boston, nvmax = 13)
+coef(regfit.best,10)
+k = 10
+set.seed(1)
+folds = sample(1:k, nrow(Boston),replace = T)
+cv.errors = matrix(NA, k, 13, dimnames = list(NULL, paste(1:13)))
+for(j in 1:k){
+  best.fit = regsubsets(crim~., data = Boston[folds != j,],nvmax = 13)
+  for(i in 1:13){
+    pred = predict(best.fit,Boston[folds == j,], id=i)
+    cv.errors[j,i] = mean((Boston$crim[folds ==j] - pred)^2)
+  }
+}
+mean.cv.errors = apply(cv.errors,2,mean)
+rmse = sqrt(mean.cv.errors)
+par(mfrow=c(1,1))
+plot(rmse, pch = 19, type = "b")
+min.ind = which.min(rmse)
+min.ind
+# 12 is minimum index
+rmse[min.ind]
+# RMSE = 6.57
+
+# Lasso
+x = model.matrix(crim~., data = Boston)
+y = Boston$crim
+lasso = cv.glmnet(x,y,type.measure = 'mse')
+plot(lasso)
+lasso$lambda.min
+# Best lambda = 0.047
+lasso.mse = lasso$cvm[lasso$lambda == lasso$lambda.min]
+sqrt(lasso.mse)
+# RMSE = 6.56
+
+# Ridge
+ridge = cv.glmnet(x,y, type.measure = 'mse',alpha = 0)
+plot(ridge)
+ridge$lambda.min
+# Best Lambda = 0.59
+ridge.mse = ridge$cvm[ridge$lambda == ridge$lambda.min]
+sqrt(ridge.mse)
+# RMSE = 6.55
+
+# PCR
+pcr.fit = pcr(crim~., data=Boston, scale=T, validation = 'CV')
+summary (pcr.fit)
+# 13 Variable RMSE = 6.52
+```
+
+a.	While trying to analyze the Boston data set for influences on the crime rate, regressions were run with subset selection, Lasso regression, ridge regression, and PCR.
+
+```{r}
+# B - Which model to use? Include validation error, MSE, etc.
+```
+
+b.	For the subset selection method, 12 was found as the minimum index and that produced an RMSE of 6.57. For the Lasso regression, the minimum lambda of 0.047 was found and used to result an RMSE of 6.56. With the ridge regression, the minimum lambda was found to be 0.59; this produced a RMSE of 6.55. Lastly, using PCR, the 13-variable RMSE was output to be 6.52.
+
+```{r}
+# C - Does the chosen model involve all features? Why or why not?
+```
+
+c.	For this question, the best model to use would be the PCR using 13-variables because it had the lower RMSE of the entire set. However, all models produced very similar RMSE, so the easiest explained would also have merit for this prediction.
+
+
+## Chapter 8 - Questions 8
+
+```{r}
+#######################################################
+# Chapter 8 - Question 8
+#######################################################
+
+library (ISLR)
+library (tree)
+library(randomForest)
+
+summary(Carseats)
+
+# A - separate into test and sample set.
+
+set.seed(1)
+train = sample(1:nrow(Carseats), nrow(Carseats)*0.8)
+carseats.test = Carseats[-train,]
+```
+
+a.	The Carseats dataset was divided into two subgroups. 80% of the data was randomly selected to be put into the train set, and the remaining 20% were stored in the test set.
+
+```{r}
+# B - Regression tree
+
+tree.carseats = tree(Sales~., data = Carseats[train,])
+summary(tree.carseats)
+plot(tree.carseats)
+text(tree.carseats)
+
+yhat.carseats = predict(tree.carseats, carseats.test)
+mean((yhat.carseats - carseats.test$Sales)^2)
+# MSE = 4.817
+```
+
+b.	The following tree diagram shows the regression tree based on the training set of the dataset. The MSE that was produced with this regression was 4.817.
+
+```{r}
+# C - Cross-validation to determine optimal tree complexity
+
+cv.carseats = cv.tree(tree.carseats, FUN = prune.tree)
+par(mfrow = c(1,2))
+plot(cv.carseats$size, cv.carseats$dev, type = 'b')
+plot(cv.carseats$k, cv.carseats$dev, type = 'b')
+
+# Looks like approximately 8 - 10 is the best choice
+pruned.carseats8 = prune.tree(tree.carseats, best = 8)
+summary(pruned.carseats8)
+yhat8 = predict(pruned.carseats8, carseats.test)
+mean((yhat8 - carseats.test$Sales)^2)
+
+pruned.carseats9 = prune.tree(tree.carseats, best = 9)
+summary(pruned.carseats9)
+yhat9 = predict(pruned.carseats9, carseats.test)
+mean((yhat9 - carseats.test$Sales)^2)
+
+# 9 produces slightly lower MSE (4.831) than 8 nodes (4.978),
+# but both were higher than before
+
+par(mfrow = c(1,1))
+plot(pruned.carseats9)
+text(pruned.carseats9)
+```
+
+c.	Upon using cross validation of the train and test data set, the optimal level of pruning was 9 terminal nodes. See the plots below to determine where those values were found.
+
+When selecting the pruning method to stop at 9 terminal nodes, the MSE that was produced was 4.831. This was however not an improvement from the tree diagram that incorporated for all variables. The tree diagram for the 9-node pruned tree is shown below.
+
+```{r}
+# D - Bagging
+
+bag.carseats = randomForest(Sales~.,
+                            data = Carseats[train,],
+                            mtry = 10,
+                            ntree = 500,
+                            importance = T)
+yhat.bag = predict(bag.carseats, carseats.test)
+mean((yhat.bag - carseats.test$Sales)^2)
+# Bagging reduces RME to 2.077
+
+importance(bag.carseats)
+# Top three most important in terms of % Increase of MSE are
+# Price, ShelveLoc, and Age with Advertising and CompPrice next.
+```
+
+d.	In the bagging approach for this method, with a 500-tree set. This method produced a test error rate that was lower than a single tree diagram and the cross-validation method as the MSE for this method was 2.077. After utilizing the importance function, Price, ShelveLoc, and Age are the top three most important variables for prediction.
+
+```{r}
+# E - Random Forest
+
+rf.carseats = randomForest(Sales~.,
+                           data=Carseats[train,],
+                           mtry = 5,
+                           ntree = 500,
+                           importance = T)
+yhat.rf = predict(rf.carseats, carseats.test)
+mean((yhat.rf - carseats.test$Sales)^2)
+# Random forest produced MSE = 2.175
+
+importance(rf.carseats)
+# Top two are clearly Price and ShelveLoc, and next three are
+# CompPrice, Advertising, and Age
+```
+
+e.	Utilizing the random forest function with 500 trees and depth of 5 nodes per tree, the MSE produced from training and testing data sets was 2.175. Again, using the importance function, the top two predicting factors for the random forest were Price and ShelveLoc; with CompPrice, Advertising and Age also in the top five.
+
+
+## Chapter 8 - Questions 11
+
+```{r}
+#######################################################
+# Chapter 8 - Question 11
+#######################################################
+
+library(gbm)
+
+# A - 1000 observation training set
+train = c(1:1000)
+
+Caravan$Purchase = ifelse (Caravan$Purchase == 'Yes',1,0)
+caravan.train = Caravan[train,]
+caravan.test = Caravan[-train,]
+```
+
+a.	A training set of the first 1000 responses was set and the remaining responses were set in the test set.
+
+```{r}
+# B - Boosting with purchasing. 1000 trees and .01 shrink
+
+set.seed(1)
+boost.caravan = gbm(Purchase~., data = caravan.train,
+                    distribution = 'bernoulli', n.trees=1000,
+                    shrinkage = 0.01)
+summary(boost.caravan)
+# Three most impactful are Ppersaut, Mkoopkla, and Moplhoog
+```
+
+b.	While using the boosting model with 1000 trees and shrinkage of 0.01, it was discovered that the most important factors were Ppersaut, Mkoopkla, and Moplhoog.
+
+```{r}
+# C - Boosting to predict data
+
+boost.prob = predict(boost.caravan, caravan.test,
+                            n.trees = 1000, type = 'response')
+boost.predict = ifelse(boost.prob > .2, 1, 0)
+table(caravan.test$Purchase, boost.predict)
+
+# Predicted who end up buying diveded by total predicted
+33 / (123 + 33)
+# 21.15% predicted to buy actually do.
+
+# Compare to binomial logistic regression predictor
+lm.caravan = glm(Purchase~., data = caravan.train, family = 'binomial')
+lm.prob = predict(lm.caravan, caravan.test)
+lm.predict = ifelse(lm.prob>.2,1,0)
+table(caravan.test$Purchase,lm.predict)
+
+# Predicted who end up buying divided by total predicted
+15 / (15 + 82)
+# 15.46% predicted to buy actually do logistic regression
+```
+
+c.	To determine the probability that a consumer would buy a good, boosting was again used to predict the number of likely consumers (those with greater than 20% chance of purchasing). Of those that were predicted to buy (156), only 33 of those ended up purchasing. This gives the fraction of 33/156 who in fact made the purchase – approximately 21.15%. In comparison, if we were to do a binomial logistic regression, the predicted number of 97 was lower. Of those, only 15 ended up making the purchase, which yielded a 15/97 fraction, or 15.46%.
+
+
+## Problem 1
+
+```{r}
+#######################################################
+# Beauty Pays
+#######################################################
+
+beauty = read.csv("~/Downloads/BeautyData.csv",header=T)
+summary(beauty)
+
+
+# 1 - Estimate effect of beauty into course ratings
+
+lm.beauty = lm(BeautyScore ~ CourseEvals, data = beauty)
+summary(lm.beauty)
+plot(beauty$CourseEvals, beauty$BeautyScore)
+abline(lm.beauty, col='red')
+
+lm.beauty2 = lm(BeautyScore ~., data = beauty)
+summary(lm.beauty2)
+# There is an influence on beauty with course evaluations.
+```
+
+1.  The first step in this problem was to see if there was a significant coefficient for BeautyScore and CourseEvals. To do this, I created a linear regression with only these two variables and saw a t value of over 9.5, meaning that there was essentially no chance for this not to be significant. The lead coefficient for this variable of 0.61 (+/- 0.12 for a 95% confidence intervale) shows that this is a positively correlated relationship, meaning that if the professor was more attractive, it is likely that their course evaluations were higher.
+    After seeing this, a second regression was done with all variables in comparison with price. What resulted was that, again, BeautyScore and CourseEvals were correlated. In addition though, it turned out the teaching lower classes, and whether a professor was male or female also had significant correlation as well.
+
+```{r}
+
+# 2 - See Solution Below
+
+```
+
+2.  Dr. Hamermesh's statement given about this study is very accurate. Based on this study, there is no way to tell if a teacher with good looks is rated higher because of their looks, or they are simple a better teacher. If one were looking to answer that question, a different study would have to be designed to do so.
+
+
+
+## Problem 2
+
+
+
+```{r}
+#######################################################
+# Housing Price Structure
+#######################################################
+
+houses = read.csv("~/Downloads/MidCity.csv",header=T)
+summary (houses)
+
+
+houses$Nbhd = as.factor(houses$Nbhd)
+nbhd.model = as.data.frame(model.matrix(Price~., data = houses))
+lm.houses = lm(houses$Price ~., data = houses)
+summary(lm.houses)
+
+# 1 - Is there a brick house premium? All others  constant.
+  # Yes. Brick = $17,323.54
+
+# 2 - Is there a premium for neighborhood 3?
+  # Yes. Nbhd3 = $20,534.71
+```
+
+1. & 2.  As is shown in the table above, both bring a brick house (BrickYes) and being in neighborhood 3 (Nbhd3) are siginicant value increases on the overall price of a house. Brick being a premium that increases the price of comparable house by an estimate of $17,323.54 (+/- $3,976 for a 95% confidence interval), and neighborhood 3 adding approximately $20,534.71 (+/- $6,352 for a 95% confidence interval). With t values of 8.707 and 6.465 respecifively, it can be said easily that each is significant as the chance of either lead coefficient being zero extremely small.
+
+```{r}
+# 3 - Extra premium for brick in neighborhood 3?
+
+lm.nbhd3_brick = lm(houses$Price ~. + Nbhd3 * BrickYes, data = nbhd.model)
+summary(lm.nbhd3_brick)
+# Yes. Nbhd3 & Brick = $10,192.78
+```
+
+3.  To analyze if there was a significant impact of an extra premium to have a brick house in neighborhood 3, an additional regression was done with all variables from above, but an addition of an interaction term between Nbhd3 and BrickYes. Once completed, the regression give a significant outcome of $10,192.78 (+/- $8,358 for a 95% confidence interval), telling that there is very little chance for this coefficient to be zero, and thus has significance.
+
+```{r}
+# 4 - Can we combine neighborhood 1 and 2 into a single 'older' neighborhood?
+
+# No. Explained below.
+```
+
+4.  Utilizing the summary table from part 1 and 2, one can see that the premium of being in neighborhood 2 is possibly not significant. The 95% confidence interval includes zero as a possible value, and thus, could not have an impact on the house price. However, this does not necessarily mean that neighborhood 1 and 2 should be combined together as a single 'older neighborhood' category. This is making the assumption that both neighborhoods are in comparable locations, have similar sized houses, and desirable neighbors. All these assumptions are not something that can be said based on the data set, and placing them together could incorporate bias into the question.
+
+
+## Problem 3
+
+```{r}
+#######################################################
+# What causes what??
+#######################################################
+
+# Questions 1 - 4 answered below.
+
+```
+
+1.  The flaws in the idea of running a regression based on crime rate and the number of police on the street are numerous. As intuitively as it is than a higher crime rate would lead to more police, one has to consider that there is a significant chance that the converse would be true as well. That relationship would have to be explored as well with a series of test and control sets to find the measure. There are two many contributing factors here to simply take those two measures, run a regression, and be able to predict well.
+
+2.  The researchers at UPENN were able to isolate the effect of police presence by studying days when there is a high-alert of a crime; and thus, more police would be present without a tie to crimes. The reaction to this would be able measure the effect that a higher police presense relates tocrime rate. Table 2 was able to compare the High-Alert rate with the crime rate while keeping ridership of the METRO system constant. What this table shows is that a larger police presense has a negative impact on crime rate to a 99% significance level.
+
+3.  The reason to have METRO ridership set during this experiment is to verify that people are there for an opportunity for crime to happen. This was done to verify that all contributing factors remain constant in order to create a reliable experiment.
+
+4.  Table 4 looks to show the effects of a high-alert times, and thus a larger police presense, with the crime-rate in certain areas of Washington DC. In this table, it is shown at a 99% level of significance that only District 1 has a correlation 
+
+
+## Problem 4
+
+  For the Car project, I was in charge of testing and researching how to maximize with trees, random forest, and boosting. I also tested cross-validations with these methods to find the best depth, number of trees and what variables had the most variance.
+  
+  After the data cleaning and predicting method were finished, I assisted in the creation of our group presentation. I was also in charge of the write-up for exploratory data analysis, tree method, and random forest regression.
